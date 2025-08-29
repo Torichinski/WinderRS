@@ -4,7 +4,7 @@
 #include <Keypad.h>
 #include <Servo.h>
 
-// 24.08.2025
+// 25.08.2025
 // переменные портов
 LiquidCrystal lcd(28, 29, 30, 31, 32, 33);
 const int motorPins[] = {4, 5, 6, 7};
@@ -264,3 +264,4 @@ void loop() {
     } 
     
 }
+

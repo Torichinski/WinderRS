@@ -27,11 +27,11 @@ void setConsoleFontSize(int width, int height) {
     CONSOLE_FONT_INFOEX cfi;
     cfi.cbSize = sizeof(cfi);
     cfi.nFont = 0;
-    cfi.dwFontSize.X = width; // ������ �������
-    cfi.dwFontSize.Y = height; // ������ �������
+    cfi.dwFontSize.X = width; // Ширина символа
+    cfi.dwFontSize.Y = height; // Высота символа
     cfi.FontFamily = FF_DONTCARE;
     cfi.FontWeight = FW_NORMAL;
-    //std::wcscpy_s(cfi.FaceName, L"Terminal "); // ��� ������
+    //std::wcscpy_s(cfi.FaceName, L"Terminal "); // Имя шрифта
 
     SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
 }
@@ -47,10 +47,12 @@ class panel{
 		bool runInput = true;
 		int row_num;
 		
-		double paz_leng;
-    	double stator_height;
-    	double angle_motor_speed;
-    	double wire_diametr;
+		double paz_leng; 			// ширина паза для укладки проволоки
+		double width_limit;			// максимально допустимая толщина электромагнита
+    	double stator_height;		//высота паза
+    	double stator_diametr		//диаметр всего статора
+    	double angle_motor_speed;	// скорость вращения намоточного вала
+    	double wire_diametr;		// толщина проволоки
     	int coils_quality;
 		
 		panel(int num, double diametr, double kc) : num(num), diametr(diametr), kc(kc){	}
@@ -116,7 +118,7 @@ class panel{
 			cout << "Enter diametr : " << endl;
 			cin >> diametr;
 			
-		if(diametr > 80){
+		if(diametr > 80 or cin.fail()){
 			error();
 			cin.clear();
 			}
@@ -137,7 +139,7 @@ class panel{
 			this -> num = num;
 			this -> diametr = diametr;
 			this -> kc = kc;
-			// ����� �������
+			// Номер запуска
 			
 			row_index(file);
 			append_value(file, num);

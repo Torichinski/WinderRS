@@ -1,10 +1,9 @@
-
+#include <EEPROM.h>
 #include <Stepper.h>
 #include <LiquidCrystal.h>
 #include <Keypad.h>
 #include <Servo.h>
 
-// 25.08.2025
 // переменные портов
 LiquidCrystal lcd(28, 29, 30, 31, 32, 33);
 const int motorPins[] = {4, 5, 6, 7};
@@ -55,9 +54,18 @@ struct Elems{
       double diametr;
       int num;
       double kc;
+
+      double paz_leng;       
+      double width_limit;     
+      double stator_height;   
+      double stator_diametr;   
+      double angle_motor_speed; 
+      double wire_diametr;   
+      int coils_quality;
 };
 
 Elems* elem_ptr;
+Elems elem;
 
 class pars {  // подстройка и обработка входных данных
   public:
@@ -87,14 +95,18 @@ void setter(double diametr, int num, double kc){
 
 double machine_cor(double diametr, int num, double kc){ }
 
-void save_model(){  // сохранение параметров модели в память EEPROM
+Elems save_model_eeprom(){  // сохранение параметров модели в память EEPROM
+  Serial.begin(115200);
+  EEPROM.get(0, elem);
+  EEPROM.put(0, elem);
   }
+
+Elems read_pars(){ }
 };
 
 Elems menu_keypad() {
     int currentParam = 0;
     String inputValue = "";
-    Elems elem;
 
     while (true) {
         char sign = customKeypad.getKey();
@@ -106,12 +118,15 @@ Elems menu_keypad() {
                 case '*': // кнопка для смены параметра
                     switch (currentParam) {
                         case 0:
+                            lcd.println("Enter diametr:");  
                             elem.diametr = inputValue.toFloat();
                             break;
                         case 1:
+                            lcd.println("Enter num:");  
                             elem.num = inputValue.toInt();
                             break;
                         case 2:
+                            lcd.println("Enter kc:");  
                             elem.kc = inputValue.toFloat();
                             break;
                     }
@@ -170,6 +185,8 @@ void setup() {
     lcd.begin(16, 2);
     lcd.setCursor(1, 0);
     lcd.println("on");
+    delay(5000);
+    lcd.clear();
     
     sev_up.attach(39);
     sev_down.attach(38);
@@ -197,8 +214,10 @@ void buzzer(){
   tone(buz, freq, 20);  
 }
 
-double smooth(class pars){ // указатель на параметры объекта структуры
-  int num = num;
+Elems smooth(){ // указатель на параметры объекта структуры
+  int num = elem.num;
+  double diametr = elem.diametr;
+  double kc = elem.kc;
 }
 
 void motor_step() {
@@ -264,4 +283,3 @@ void loop() {
     } 
     
 }
-

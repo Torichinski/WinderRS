@@ -4,6 +4,15 @@
 #include <Keypad.h>
 #include <Servo.h>
 
+
+/*
+ Единицы измерения физических величин:
+ Длина - мм
+ Площадь сечения - мм^2
+ Линейная скорость - мм/с
+ Угловая скорость - рад/с
+ */
+ 
 // переменные портов
 LiquidCrystal lcd(28, 29, 30, 31, 32, 33);
 const int motorPins[] = {4, 5, 6, 7};
@@ -26,12 +35,12 @@ const int stepSpeed = 200;
 const int windSpeed = 255;
 const int freq = 345;
 int cur_angle = -1;
-int launchs;
+int launchs = 1;
 
-// статические параметры намотки
 static int num;
 static double diametr;
 static double kc;
+static float pi = 3.14;
 
 Stepper myStepper(stepSpeed, motorPins[0], motorPins[1], motorPins[2], motorPins[3]);
 // клавиатура
@@ -51,17 +60,19 @@ byte colPins[COLS] = {23, 22, 43, 42}; //к каким выводам подкл
 Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS);
 
 struct Elems{
-      double diametr;
-      int num;
+      double diametr;    // диаметр паза
+      int num;    // число витков
       double kc;
 
       double paz_leng;       
-      double width_limit;     
+      double wire_width_limit;     
       double stator_height;   
       double stator_diametr;   
       double angle_motor_speed; 
       double wire_diametr;   
       int coils_quality;
+      double winder_radius;
+      double extra_wire_len;
 };
 
 Elems* elem_ptr;
@@ -97,8 +108,13 @@ double machine_cor(double diametr, int num, double kc){ }
 
 Elems save_model_eeprom(){  // сохранение параметров модели в память EEPROM
   Serial.begin(115200);
-  EEPROM.get(0, elem);
-  EEPROM.put(0, elem);
+  
+  EEPROM.write(0, launchs);
+  EEPROM.update(0, launchs);
+
+  byte stec_num = EEPROM.read(0) ? 0 : stec_num = 1;
+  EEPROM.get(stec_num, elem);
+  EEPROM.put(stec_num, elem);
   }
 
 Elems read_pars(){ }
@@ -152,7 +168,18 @@ Elems menu_keypad() {
                             elem.kc = inputValue.toFloat();
                             break;
                     }
-                    return elem;
+                    
+                    lcd.clear();
+                    if(elem.diametr && elem.num && elem.kc != 0){
+                      return elem;
+                    }
+                    else{
+                      lcd.println("No pars!!");
+                      delay(5000);
+                      lcd.clear();
+                      currentParam = 0;
+                    }
+
                 case 'B':
                     currentParam--;
                     if (currentParam < 0) {
@@ -181,7 +208,7 @@ void setup() {
     pinMode(Onbut, INPUT_PULLUP);
     pinMode(Canselbut, INPUT_PULLUP);
     pinMode(Continbut, INPUT_PULLUP);
-    
+
     lcd.begin(16, 2);
     lcd.setCursor(1, 0);
     lcd.println("on");
@@ -201,12 +228,11 @@ void setup() {
 }
 
 //функция для расчета времени намотки
-double math(double diametr, double num, double kc) { // leng
+double math(double diametr, double num, double kc) {
     double times = 0;
-    double pi = 3.14;
     double len = pi * diametr * num;
-    double line_speed;
-    times = (len / 5) * kc;
+    double line_speed = elem.winder_radius * elem.angle_motor_speed;
+    times = (len / line_speed) * kc;
     return times;
 }
 
@@ -214,18 +240,31 @@ void buzzer(){
   tone(buz, freq, 20);  
 }
 
-Elems smooth(){ // указатель на параметры объекта структуры
+Elems smooth(){ 
   int num = elem.num;
   double diametr = elem.diametr;
   double kc = elem.kc;
+  elem.wire_diametr = 0.2;
+  elem.wire_width_limit = 3.5;
+  elem.winder_radius = 9.2;
+  elem.angle_motor_speed = 1,2;
+  
 }
 
-void motor_step() {
+void motor_step(float delta) {
     int val = analogRead(stepSelector);
     int steps = map(val, 0, 1023, 0, 100); // Наятройка скорости от выходного сигнала
     myStepper.step(steps);
     Serial.write(steps);
     delay(10);
+
+    if(delta != 0){
+      int dstep = 99;
+      int dtime = round(delta / dstep);
+      myStepper.step(99);
+      delay(dtime);
+      myStepper.step(steps);
+    }
 }
 
 void hang() {
@@ -262,8 +301,7 @@ void holder(){
 
 void loop() {
     hang();
-    motor_step();
-    menu_keypad();
+    motor_step(0);
     
     Elems elem = menu_keypad();
 

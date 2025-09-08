@@ -45,34 +45,34 @@ static float pi = 3.14;
 Stepper myStepper(stepSpeed, motorPins[0], motorPins[1], motorPins[2], motorPins[3]);
 // клавиатура
 
-const byte ROWS = 4; //число строк у нашей клавиатуры
-const byte COLS = 4; //число столбцов у нашей клавиатуры
-char hexaKeys[ROWS][COLS] = {// здесь мы располагаем названия наших клавиш, как на клавиатуре,для удобства пользования
+const byte ROWS = 4;
+const byte COLS = 4; 
+char hexaKeys[ROWS][COLS] = {
     {'1', '4', '7', '*'},
     {'2', '5', '8', '0'},
     {'3', '6', '9', '#'},
     {'A', 'B', 'C', 'D'}
 };
 
-byte rowPins[ROWS] = {27, 26, 25, 24}; //к каким выводам подключаем управление строками
-byte colPins[COLS] = {23, 22, 43, 42}; //к каким выводам подключаем управление столбцами
+byte rowPins[ROWS] = {27, 26, 25, 24}; 
+byte colPins[COLS] = {23, 22, 43, 42}; 
 
 Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS);
 
 struct Elems{
       double diametr;    // диаметр паза
       int num;    // число витков
-      double kc;
+      double kc; // коэффициент отклонения формы сечения паза от идеальной окружности
 
-      double paz_leng;       
-      double wire_width_limit;     
-      double stator_height;   
-      double stator_diametr;   
-      double angle_motor_speed; 
-      double wire_diametr;   
-      int coils_quality;
-      double winder_radius;
-      double extra_wire_len;
+      double paz_leng;  // длина паза вдоль намоточного вала     
+      double wire_width_limit; // максимально допустимая ширина электромагнита с обмоткой     
+      double stator_height;   // высота статора
+      double stator_diametr;   // диаметр статора
+      double angle_motor_speed; // угловая скорость намоточного вала 
+      double wire_diametr; // толщина провода   
+      int coils_quality; // количество электромагнитов на одном статоре
+      double winder_radius; // радиус фильеры намоточного вала
+      double extra_wire_len; // запасная длина провода для соединения
 };
 
 Elems* elem_ptr;
@@ -106,7 +106,8 @@ void setter(double diametr, int num, double kc){
 
 double machine_cor(double diametr, int num, double kc){ }
 
-Elems save_model_eeprom(){  // сохранение параметров модели в память EEPROM
+// сохранение параметров модели в память EEPROM
+Elems save_model_eeprom(){  
   Serial.begin(115200);
   
   EEPROM.write(0, launchs);
@@ -321,3 +322,4 @@ void loop() {
     } 
     
 }
+

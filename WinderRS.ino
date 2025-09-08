@@ -59,6 +59,7 @@ byte colPins[COLS] = {23, 22, 43, 42};
 
 Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS);
 
+// Структура, хранящая параметры намотки
 struct Elems{
       double diametr;    // диаметр паза
       int num;    // число витков
@@ -121,6 +122,7 @@ Elems save_model_eeprom(){
 Elems read_pars(){ }
 };
 
+// Функция получения входных данных от пользователя
 Elems menu_keypad() {
     int currentParam = 0;
     String inputValue = "";
@@ -172,6 +174,7 @@ Elems menu_keypad() {
                     
                     lcd.clear();
                     if(elem.diametr && elem.num && elem.kc != 0){
+                      launchs++;
                       return elem;
                     }
                     else{
@@ -237,6 +240,7 @@ double math(double diametr, double num, double kc) {
     return times;
 }
 
+// Условный сигнал с пьезоэлемента
 void buzzer(){
   tone(buz, freq, 20);  
 }
@@ -245,6 +249,7 @@ Elems smooth(){
   int num = elem.num;
   double diametr = elem.diametr;
   double kc = elem.kc;
+  // Переменные, заданные по умолчанию
   elem.wire_diametr = 0.2;
   elem.wire_width_limit = 3.5;
   elem.winder_radius = 9.2;
@@ -322,4 +327,5 @@ void loop() {
     } 
     
 }
+
 

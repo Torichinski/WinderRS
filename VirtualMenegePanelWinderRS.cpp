@@ -49,11 +49,11 @@ class panel{
 		
 		double paz_leng; 			// ширина паза для укладки проволоки
 		double width_limit;			// максимально допустимая толщина электромагнита
-    	double stator_height;		//высота паза
-    	double stator_diametr		//диаметр всего статора
+    	double stator_height;		// высота паза
+    	double stator_diametr		// диаметр всего статора
     	double angle_motor_speed;	// скорость вращения намоточного вала
     	double wire_diametr;		// толщина проволоки
-    	int coils_quality;
+    	int coils_quality;			// кол-во обмоток статора
 		
 		panel(int num, double diametr, double kc) : num(num), diametr(diametr), kc(kc){	}
 		
@@ -181,3 +181,4 @@ Panel.setParametrs();
 
 	return 0;
 }
+

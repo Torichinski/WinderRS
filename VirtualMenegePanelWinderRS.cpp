@@ -5,6 +5,7 @@
 #include <cstring>
 #include <limits>
 #include <stdexcept>
+#include <vector>
 
 using namespace std;
 
@@ -13,6 +14,8 @@ using namespace std;
 HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
 
 fstream file("parametrs.txt", std::ios::in | std::ios::out | std::ios::app);
+
+
 string line;
 
 void append_value(fstream& file, double value) {
@@ -27,11 +30,11 @@ void setConsoleFontSize(int width, int height) {
     CONSOLE_FONT_INFOEX cfi;
     cfi.cbSize = sizeof(cfi);
     cfi.nFont = 0;
-    cfi.dwFontSize.X = width; // Ширина символа
-    cfi.dwFontSize.Y = height; // Высота символа
+    cfi.dwFontSize.X = width; 
+    cfi.dwFontSize.Y = height;
     cfi.FontFamily = FF_DONTCARE;
     cfi.FontWeight = FW_NORMAL;
-    //std::wcscpy_s(cfi.FaceName, L"Terminal "); // Имя шрифта
+    //std::wcscpy_s(cfi.FaceName, L"Terminal "); 
 
     SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
 }
@@ -46,14 +49,18 @@ class panel{
 		
 		bool runInput = true;
 		int row_num;
+		vector <double> characteristics;
 		
-		double paz_leng; 			// ширина паза для укладки проволоки
-		double width_limit;			// максимально допустимая толщина электромагнита
-    	double stator_height;		// высота паза
-    	double stator_diametr		// диаметр всего статора
-    	double angle_motor_speed;	// скорость вращения намоточного вала
-    	double wire_diametr;		// толщина проволоки
-    	int coils_quality;			// кол-во обмоток статора
+		double paz_leng;     
+      	double wire_width_limit;      
+      	double stator_height;  
+      	double stator_diametr;   
+      	double angle_motor_speed;  
+      	double wire_diametr;   
+      	int coils_quality; 
+      	double winder_radius; 
+      	double extra_wire_len;
+      	
 		
 		panel(int num, double diametr, double kc) : num(num), diametr(diametr), kc(kc){	}
 		
@@ -100,6 +107,9 @@ class panel{
     }
 		
 	void readParametrs(double& val){
+		int pars_num;
+		cout << "Enter num of parametrs from file, that your need:" << endl;
+		cin >> pars_num;
 		
 	}
 		
@@ -130,7 +140,22 @@ class panel{
 			cin >> runInput;
 			
 		if(num, diametr, kc != 0 && runInput == true){
+			
 			cout << "Choose extra parametrs from the rule :" << endl;
+			string line;
+			
+			ifstream Extra_pars("Extra parametrs.txt");
+			SetConsoleOutputCP(CP_UTF8);
+			if (!Extra_pars.is_open()) {
+            throw std::runtime_error("Îøèáêà îòêðûòèÿ ôàéëà!");
+        	}        
+			while (getline(Extra_pars, line)){
+        	cout << line << endl;
+        	}
+        	Extra_pars.close();
+		
+			
+        cout << "Next" << endl;
 		}
 		 
 	
@@ -139,7 +164,6 @@ class panel{
 			this -> num = num;
 			this -> diametr = diametr;
 			this -> kc = kc;
-			// Номер запуска
 			
 			row_index(file);
 			append_value(file, num);
@@ -156,7 +180,11 @@ class panel{
             cerr << "Error: Invalid input." << e.what() << endl;
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        }
+    }
+        
+	catch (const runtime_error& e) {
+        cerr << "Error: " << e.what() << std::endl;
+    }
 
 	}
 	
@@ -168,6 +196,7 @@ class panel{
 int main(int argc, char** argv) {
 	
 setlocale(LC_ALL, "RUS");
+
 
 //SetConsoleTextAttribute(h, (((2 << 4) | 14)));
 system("color 1F");
@@ -181,4 +210,3 @@ Panel.setParametrs();
 
 	return 0;
 }
-

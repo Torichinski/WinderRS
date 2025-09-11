@@ -1,0 +1,9 @@
+1. paz_leng - the length of the groove along the winding shaft  
+2. wire_width_limit -the maximum allowable width of an electromagnet with a winding     
+3. stator_height - stator height
+4. stator_diametr - stator diameter
+5. angle_motor_speed - angular velocity of the winding shaft 
+6. wire_diametr - wire thickness
+7. coils_quality - number of electromagnets on stator
+8. winder_radius - radius of the die of the winding shaft
+9. extra_wire_len - spare length of wire for connection

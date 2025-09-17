@@ -245,6 +245,7 @@ void buzzer(){
   tone(buz, freq, 20);  
 }
 
+// Функция для настройки и фильтрации параметров
 Elems smooth(){ 
   int num = elem.num;
   double diametr = elem.diametr;
@@ -327,5 +328,6 @@ void loop() {
     } 
     
 }
+
 
 

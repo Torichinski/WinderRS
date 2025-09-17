@@ -79,7 +79,7 @@ struct Elems{
 Elems* elem_ptr;
 Elems elem;
 
-class pars {  // подстройка и обработка входных данных
+class pars {  // управление и обработка входных данных
   public:
     double diametr;
     int num;
@@ -258,6 +258,7 @@ Elems smooth(){
   
 }
 
+// настройка подвеса вручную с помощью энкодера
 void motor_step(float delta) {
     int val = analogRead(stepSelector);
     int steps = map(val, 0, 1023, 0, 100); // Наятройка скорости от выходного сигнала
@@ -328,6 +329,7 @@ void loop() {
     } 
     
 }
+
 
 
 

@@ -258,7 +258,7 @@ Elems smooth(){
   
 }
 
-// настройка подвеса вручную с помощью энкодера
+// настройка направляющего подвеса вручную с помощью энкодера
 void motor_step(float delta) {
     int val = analogRead(stepSelector);
     int steps = map(val, 0, 1023, 0, 100); // Наятройка скорости от выходного сигнала
@@ -266,6 +266,7 @@ void motor_step(float delta) {
     Serial.write(steps);
     delay(10);
 
+    // изменение положения подвеса в процессе обмотки
     if(delta != 0){
       int dstep = 99;
       int dtime = round(delta / dstep);
@@ -329,6 +330,7 @@ void loop() {
     } 
     
 }
+
 
 
 

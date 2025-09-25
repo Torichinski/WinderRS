@@ -239,10 +239,10 @@ void buzzer(){
 // Функция для расчета длины проволоки и времени её намотки
 double math(double diametr, double num, double kc) {
     double times = 0;
-    double len = pi * diametr * num;
+    double len = (pi * diametr * num) * kc;
     double bending_coefficient; 
     double line_speed = elem.winder_radius * elem.angle_motor_speed;
-    times = (len / line_speed) * kc;
+    times = (len / line_speed);
     return times;
 }
 
@@ -334,6 +334,7 @@ void loop() {
     } 
     
 }
+
 
 
 

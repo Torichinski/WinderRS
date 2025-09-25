@@ -231,18 +231,19 @@ void setup() {
     Serial.begin(9600);
 }
 
-//функция для расчета времени намотки
-double math(double diametr, double num, double kc) {
-    double times = 0;
-    double len = pi * diametr * num;
-    double line_speed = elem.winder_radius * elem.angle_motor_speed;
-    times = (len / line_speed) * kc;
-    return times;
-}
-
 // Условный сигнал с пьезоэлемента
 void buzzer(){
   tone(buz, freq, 20);  
+}
+
+// Функция для расчета длины проволоки и времени её намотки
+double math(double diametr, double num, double kc) {
+    double times = 0;
+    double len = pi * diametr * num;
+    double bending_coefficient; 
+    double line_speed = elem.winder_radius * elem.angle_motor_speed;
+    times = (len / line_speed) * kc;
+    return times;
 }
 
 // Функция для настройки и фильтрации параметров
@@ -250,6 +251,9 @@ Elems smooth(){
   int num = elem.num;
   double diametr = elem.diametr;
   double kc = elem.kc;
+  if (elem.num > 10000 || elem.diametr > 50 || elem.kc > 2.5){
+   return 0;
+  }
   // Переменные, заданные по умолчанию
   elem.wire_diametr = 0.2;
   elem.wire_width_limit = 3.5;
@@ -330,6 +334,7 @@ void loop() {
     } 
     
 }
+
 
 
 

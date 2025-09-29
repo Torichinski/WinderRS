@@ -252,13 +252,14 @@ Elems smooth(){
   double diametr = elem.diametr;
   double kc = elem.kc;
   if (elem.num > 10000 || elem.diametr > 50 || elem.kc > 2.5){
-   return 0;
+   lcd.println("Invalid pars!");
+   return;
   }
   // Переменные, заданные по умолчанию
-  elem.wire_diametr = 0.2;
-  elem.wire_width_limit = 3.5;
-  elem.winder_radius = 9.2;
-  elem.angle_motor_speed = 1,2;
+  double wire_diametr = elem.wire_diametr = 0.2;
+  double wire_width_limit = elem.wire_width_limit = 3.5;
+  double winder_radius = elem.winder_radius = 9.2;
+  double angle_motor_speed = elem.angle_motor_speed = 1.2;
   
 }
 
@@ -334,6 +335,7 @@ void loop() {
     } 
     
 }
+
 
 
 

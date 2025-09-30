@@ -181,6 +181,7 @@ Elems menu_keypad() {
                     
                     lcd.clear();
                     if(elem.diametr && elem.num && elem.kc != 0){
+                      buzzer(3);
                       launchs++;
                       return elem;
                     }
@@ -207,6 +208,7 @@ Elems menu_keypad() {
         currentParam++;
       }
     if (!digitalRead(Canselbut)) {
+        buzzer();
         lcd.clear();
         currentParam--;
       }
@@ -254,6 +256,8 @@ Elems smooth(){
   int num = elem.num;
   double diametr = elem.diametr;
   double kc = elem.kc;
+  double paz_leng = elem.paz_leng;
+  
   if (elem.num > 10000 || elem.diametr > 50 || elem.kc > 2.5){
    lcd.println("Invalid pars!");
    return;
@@ -338,6 +342,7 @@ void loop() {
     } 
     
 }
+
 
 
 

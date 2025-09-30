@@ -232,13 +232,16 @@ void setup() {
 }
 
 // Условный сигнал с пьезоэлемента
-void buzzer(){
-  tone(buz, freq, 20);  
+void buzzer(int qu = 1){
+ for(int i = 1; i <= qu; i++){
+  tone(buz, freq, 20);
+ }
 }
 
 // Функция для расчета длины проволоки и времени её намотки
 double math(double diametr, double num, double kc) {
     double times = 0;
+    smooth();
     double len = (pi * diametr * num) * kc;
     double bending_coefficient; 
     double line_speed = elem.winder_radius * elem.angle_motor_speed;
@@ -335,6 +338,7 @@ void loop() {
     } 
     
 }
+
 
 
 

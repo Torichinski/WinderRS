@@ -79,6 +79,13 @@ struct Elems{
 Elems* elem_ptr;
 Elems elem;
 
+// Условный сигнал с пьезоэлемента
+void buzzer(int qu = 1){
+ for(int i = 1; i <= qu; i++){
+  tone(buz, freq, 20);
+ }
+}
+
 class pars {  // управление и обработка входных данных
   public:
     double diametr;
@@ -231,13 +238,6 @@ void setup() {
     Serial.begin(9600);
 }
 
-// Условный сигнал с пьезоэлемента
-void buzzer(int qu = 1){
- for(int i = 1; i <= qu; i++){
-  tone(buz, freq, 20);
- }
-}
-
 // Функция для расчета длины проволоки и времени её намотки
 double math(double diametr, double num, double kc) {
     double times = 0;
@@ -338,6 +338,7 @@ void loop() {
     } 
     
 }
+
 
 
 

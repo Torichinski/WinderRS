@@ -155,10 +155,14 @@ Elems menu_keypad() {
                             lcd.println("Enter kc:");  
                             elem.kc = inputValue.toFloat();
                             break;
+                        case 3:
+                            lcd.println("Enter coil width:");
+                            elem.paz_leng = inputValue.toFloat();
+                            break;
                     }
                     inputValue = "";
                     currentParam++;
-                    if (currentParam > 2) {
+                    if (currentParam > 3) {
                         currentParam = 0;
                     }
                     break;
@@ -176,6 +180,9 @@ Elems menu_keypad() {
                             break;
                         case 2:
                             elem.kc = inputValue.toFloat();
+                            break;
+                        case 3:
+                            elem.paz_leng = inputValue.toFloat();
                             break;
                     }
                     
@@ -258,7 +265,7 @@ Elems smooth(){
   double kc = elem.kc;
   double paz_leng = elem.paz_leng;
   
-  if (elem.num > 10000 || elem.diametr > 50 || elem.kc > 2.5){
+  if (elem.num > 10000 || elem.diametr > 30 || elem.kc > 2.5 || elem.paz_leng > 60){
    lcd.println("Invalid pars!");
    return;
   }
@@ -315,11 +322,6 @@ void winder(double times) {
       }
 }
 
-
-// подвижный держатель заготовки
-void holder(){ 
-}
-
 void loop() {
     hang();
     motor_step(0);
@@ -342,6 +344,7 @@ void loop() {
     } 
     
 }
+
 
 
 

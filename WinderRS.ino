@@ -37,6 +37,7 @@ const int freq = 345;
 int cur_angle = -1;
 int launchs = 1;
 
+// статические переменные
 static int num;
 static double diametr;
 static double kc;
@@ -248,7 +249,7 @@ void setup() {
 }
 
 // Функция для расчета длины проволоки и времени её намотки
-double math(double diametr, double num, double kc) {
+double math(double diametr, double num, double kc, double paz_leng) {
     double times = 0;
     smooth();
     double len = (pi * diametr * num) * kc;
@@ -295,6 +296,7 @@ void motor_step(float delta) {
     }
 }
 
+// Направляющая клешня-захват
 void hang() {
     int val = analogRead(angSelect);
     int angle = int(val / 1024.0 * 270.0);
@@ -328,7 +330,7 @@ void loop() {
     
     Elems elem = menu_keypad();
 
-    //  запись типа намотки в память
+    //  запись типа намотки в массив
     pars model[10];
     
     pars mark_1(diametr, num, kc);
@@ -336,7 +338,7 @@ void loop() {
     mark_1 = model[0];
 
     // Расчет времени намотки
-    double times = math(elem.diametr, elem.num, elem.kc);
+    double times = math(elem.diametr, elem.num, elem.kc, elem.paz_leng);
     
     if(times != 0){
     // Запуск намоточного механизма
@@ -344,6 +346,7 @@ void loop() {
     } 
     
 }
+
 
 
 

@@ -16,6 +16,19 @@ HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
 fstream file("parametrs.txt", std::ios::in | std::ios::out | std::ios::app);
 
 string line;
+bool runProg = true;
+
+enum class characteristics{
+	paz_leng,
+	wire_width_limit,      
+	stator_height,  
+	stator_diametr,   
+	angle_motor_speed,  
+	wire_diametr,   
+	coils_quality, 
+	winder_radius, 
+	extra_wire_len,
+  }
 
 void append_value(fstream& file, double value) {
     if (!file.is_open()){
@@ -29,11 +42,11 @@ void setConsoleFontSize(int width, int height) {
     CONSOLE_FONT_INFOEX cfi;
     cfi.cbSize = sizeof(cfi);
     cfi.nFont = 0;
-    cfi.dwFontSize.X = width; // Ширина символа
-    cfi.dwFontSize.Y = height; // Высота символа
+    cfi.dwFontSize.X = width; // Øèðèíà ñèìâîëà
+    cfi.dwFontSize.Y = height; // Âûñîòà ñèìâîëà
     cfi.FontFamily = FF_DONTCARE;
     cfi.FontWeight = FW_NORMAL;
-    //std::wcscpy_s(cfi.FaceName, L"Terminal "); // Имя шрифта
+    //std::wcscpy_s(cfi.FaceName, L"Terminal "); // Èìÿ øðèôòà
 
     SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
 }
@@ -51,8 +64,9 @@ class panel{
 		double kc;
 		
 		bool runInput = true;
+		bool withExtraPars = false;
 		int row_num;
-		int comb;
+		int comb[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 		std::vector <double> characteristics;
 		string directoryPath = "C:\\WinderRS_Sistem";
 		
@@ -65,7 +79,7 @@ class panel{
       	int coils_quality; 
       	double winder_radius; 
       	double extra_wire_len;
-      	
+    
       	//characteristics.push_back(0);
       	//characteristics.insert(characteristics.begin() + 1, paz_leng);
 		
@@ -123,33 +137,45 @@ class panel{
 		
 		void readParametrs(double& val){
 			int pars_num;
-			cout << "Enter num of parametrs from file, that your need:" << endl;
+			cout << "Enter num of parametrs from the rule, that your need:" << endl;
 			cin >> pars_num;
-			
+
 		}
 			
 		void setParametrs(){
 			
 			try{
 				while(runInput == true){
+					
 				cout << "Enter num of coils :" << endl;
 				cin >> num;
 			
-			if(num > 10000 or cin.fail() or num != (int)num){
-				error();
-				cin.clear();
-				}
+				if(num > 10000 or cin.fail() or num != (int)num){
+					cout << "Num of coils can't be more that 10.000 and must be an integer!" << endl << '\n';
+					cin.clear();
+					cin.ignore(10000, '\n');
+					continue;
+					}
 						
-				cout << "Enter diametr : " << endl;
+				cout << "Enter diametr (in mm) : " << endl;
 				cin >> diametr;
 				
-			if(diametr > 80 or cin.fail()){
-				error();
-				cin.clear();
-				}
+				if(diametr > 80 or cin.fail()){
+					cout << "Diametr can't be more that 80 mm and must be a float !" << endl << '\n';
+					cin.clear();
+					cin.ignore(10000, '\n');
+					continue;
+					}
 			
 				cout << "Enter the kontrol coefficient :" << endl;
 				cin >> kc;
+				// autopointer
+			if(kc < 0.25 || kc > 2 || cin.fail() || kc != (float)kc){
+				cout << "Kontrol coefficient is a float for 0.25 to 2 involved !" << endl << '\n';
+				cin.ignore(10000, '\n');
+				cin.clear();
+				continue;
+				}
 				
 				cout << "Enter more parametrs? Print 0 or 1 :" << endl;
 				cin >> runInput;
@@ -163,19 +189,37 @@ class panel{
 				SetConsoleOutputCP(CP_UTF8);
 				
 				if (!Extra_pars.is_open()) {
-	            throw std::runtime_error("Ошибка открытия файла!");
+	            throw std::runtime_error("Îøèáêà îòêðûòèÿ ôàéëà!");
 	        	}        
 				while (getline(Extra_pars, line)){
 	        	cout << line << endl;
 	        	}
 	        	Extra_pars.close();
 	        	
-	        	cout << '\n' << "Wrire parametrs number your need :" << endl;
-				cin >> comb;
+	        	cout << '\n' << "Write the number of the parameter you need (set 0 to skip parameter) :" << endl;
+	        	
+	        	for(int i = 1; i <= 8; ++i){
+	        	cout << i << ". ";
+				cin >> comb[i];
 				
-	        cout << "Next" << endl;
+				if (comb[i] != (int)comb[i] || comb[i] > 10000){
+					error();
+					}
+					
+				if (comb[i] != 0){
+					withExtraPars = true;
+				}
 			}
-			 
+			
+			cout << "You choose this parametr configuration:" << endl;
+                for(int i = 0; i <= 9; ++i){
+				cout << comb[i] << ' ';
+			}			
+				
+	        cout << '\n' << "Next" << endl;
+	        runInput = false;
+	        
+			}
 		
 			if (num, diametr, kc != 0 && runInput == false){
 			
@@ -189,7 +233,7 @@ class panel{
 				append_value(file, kc);
 				
 				file << '\n';
-	
+				cout << "Input was finished" << endl;
 				}
 		}
 	}
@@ -206,7 +250,7 @@ class panel{
 	
 		}
 		
-		void load_parametrs(){ // загрузка параметров на внешнее устройство
+		void load_parametrs(){ // çàãðóçêà ïàðàìåòðîâ íà âíåøíåå óñòðîéñòâî
 			
 		}
 };
@@ -224,8 +268,9 @@ int num;
 double diametr, kc;	
 panel Panel(num, diametr, kc);
 
+// runProg
 Panel.Make_Directory();
 Panel.setParametrs();
 
-	return 0;
+return 0;
 }

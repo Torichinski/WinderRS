@@ -18,16 +18,16 @@ fstream file("parametrs.txt", std::ios::in | std::ios::out | std::ios::app);
 string line;
 bool runProg = true;
 
-enum class characteristics{
-	paz_leng,
-	wire_width_limit,      
-	stator_height,  
-	stator_diametr,   
-	angle_motor_speed,  
-	wire_diametr,   
-	coils_quality, 
-	winder_radius, 
-	extra_wire_len,
+struct characteristics{
+	double paz_leng;     
+	double wire_width_limit;      
+	double stator_height;  
+	double stator_diametr;   
+	double angle_motor_speed;  
+	double wire_diametr;   
+	int coils_quality; 
+	double winder_radius; 
+	double extra_wire_len;
   }
 
 void append_value(fstream& file, double value) {
@@ -274,3 +274,4 @@ Panel.setParametrs();
 
 return 0;
 }
+
